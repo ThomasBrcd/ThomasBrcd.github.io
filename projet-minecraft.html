@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxel Engine | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Barre de navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#projects">&larr; Retour aux projets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- En-tête du projet -->
+    <header class="hero" style="height: auto; padding: 120px 20px 60px 20px;">
+        <div class="hero-content" style="max-width: 900px; margin: auto;">
+            <p class="hero-subtitle">Moteur Custom & Optimisation (C++ / OpenGL)</p>
+            <h1>Voxel Game Engine : ECS & Rendu Avancé</h1>
+            <div class="tags" style="justify-content: center; margin-top: 20px; margin-bottom: 30px;">
+                <span class="tag tag-main">C++</span>
+                <span class="tag tag-main">OpenGL</span>
+                <span class="tag">Architecture ECS</span>
+                <span class="tag">Greedy Meshing</span>
+                <span class="tag">Rendu PBR & AO</span>
+            </div>
+            
+            <div class="about-text" style="text-align: left; margin-top: 40px;">
+                <p>Co-développement d'un moteur de jeu orienté Voxel (type Minecraft) avec un fort focus sur les performances CPU/GPU et la qualité visuelle. L'architecture repose sur un modèle <strong>ECS (Entity Component System) implémenté par Sparse Sets</strong> pour maximiser la localité en cache mémoire, couplé à des algorithmes d'optimisation géométrique massifs pour afficher des millions de voxels en temps réel.</p>
+            </div>
+
+            <!-- Intégration de la vidéo de présentation Voxel Engine -->
+            <video autoplay loop muted playsinline class="article-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <source src="images/voxelEngine/video_demo_VoxelEngine.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la balise vidéo.
+            </video>
+            <p class="figure-caption">Démonstration vidéo du moteur : génération procédurale, rendu PBR, éclairage dynamique et Ambient Occlusion.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            
+            <!-- SECTION 1 : OPTIMISATION GÉOMÉTRIQUE -->
+            <h2 class="section-title">1. Optimisation Géométrique : Greedy Meshing</h2>
+            <div class="about-text">
+                <p>Dans un moteur Voxel naif, chaque cube génère 6 faces (12 triangles), ce qui sature rapidement le pipeline graphique. Pour pallier cela, l'équipe a implémenté l'algorithme de <strong>Greedy Meshing</strong> (Maillage glouton).</p>
+                <ul>
+                    <li>L'algorithme parcourt les tranches du *chunk* et fusionne les faces adjacentes partageant le même matériau en de grands quadrilatères continus.</li>
+                    <li>Cette technique réduit drastiquement le nombre de vertices envoyés au GPU (Vertex Fetch) et diminue le surcoût du Fragment Shader, tout en préservant le texturage grâce à un calcul dynamique des coordonnées UV.</li>
+                </ul>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/voxelEngine/greedy_meshing_orig.png" alt="Maillage naif sans Greedy Meshing">
+                    <p class="figure-caption"><strong>Maillage naïf :</strong> Chaque voxel visible génère ses propres faces indépendantes (coût géométrique énorme).</p>
+                </div>
+                <div>
+                    <img src="images/voxelEngine/greedy_meshing.png" alt="Maillage optimisé avec Greedy Meshing">
+                    <p class="figure-caption"><strong>Greedy Meshing :</strong> Les faces coplanaires de même type sont fusionnées en un seul plan optimisé.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <!-- SECTION 2 : PIPELINE DE RENDU PBR -->
+            <h2 class="section-title">2. Pipeline de Rendu Avancé (PBR & Shaders)</h2>
+            <div class="about-text">
+                <p>Pour dépasser le rendu "flat" traditionnel des jeux de voxels, le moteur intègre un pipeline de rendu Physically Based Rendering (PBR) basé sur le modèle de microfacettes <strong>Cook-Torrance</strong>.</p>
+            </div>
+
+            <h3 style="margin-top: 30px; color: var(--accent-color);">2.1. Éclairage Ambiant Hémisphérique (Hemispheric Ambient)</h3>
+            <div class="about-text">
+                <p>Plutôt que d'utiliser une lumière ambiante uniforme et plate, nous avons mis en place un modèle hémisphérique interpolant entre la couleur du ciel (zénith) et la couleur du sol (nadir) en fonction de la normale de la surface, apportant un volume naturel immédiat aux structures.</p>
+            </div>
+            
+            <div class="image-grid">
+                <div>
+                    <img src="images/voxelEngine/without_HA.png" alt="Sans Hemispheric Ambient">
+                    <p class="figure-caption"><strong>Standard :</strong> Éclairage plat, les zones à l'ombre manquent de volume.</p>
+                </div>
+                <div>
+                    <img src="images/voxelEngine/with_HA.png" alt="Avec Hemispheric Ambient">
+                    <p class="figure-caption"><strong>Hemispheric Ambient :</strong> Les normales orientées vers le sol reçoivent des teintes chaudes rebondies, celles vers le ciel des teintes bleutées.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: var(--accent-color);">2.2. Normal Mapping (Espace Tangent TBN)</h3>
+            <div class="about-text">
+                <p>Pour ajouter des micro-détails sans coût géométrique, les shaders calculent l'espace tangent (matrice TBN) dynamiquement pour perturber les normales selon une texture dédiée, permettant à la lumière d'accrocher les aspérités de la roche ou du bois.</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/voxelEngine/whithout_normals.png" alt="Rendu PBR classique sans Normal Mapping">
+                    <p class="figure-caption">Surface lisse sans perturbation des normales.</p>
+                </div>
+                <div>
+                    <img src="images/voxelEngine/whith_normals.png" alt="Rendu PBR avec Normal Mapping">
+                    <p class="figure-caption"><strong>Avec Normal Mapping :</strong> Le relief interagit physiquement avec la direction de la lumière.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: var(--accent-color);">2.3. Baked Ambient Occlusion (AO Vertex)</h3>
+            <div class="about-text">
+                <p>Calculer l'occlusion ambiante en temps réel (SSAO) est trop coûteux pour des terrains infinis. L'algorithme calcule donc l'occlusion <strong>lors de la génération du maillage</strong> en analysant les voisins de chaque vertex, et "cuit" (bake) cette valeur d'assombrissement directement dans les attributs des sommets.</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/voxelEngine/baked_AO_without.png" alt="Sans Baked Ambient Occlusion">
+                    <p class="figure-caption">Sans AO : Les angles internes manquent de contraste.</p>
+                </div>
+                <div>
+                    <img src="images/voxelEngine/baked_AO_with.png" alt="Avec Baked Ambient Occlusion">
+                    <p class="figure-caption"><strong>Baked AO :</strong> Assombrissement réaliste des cavités pré-calculé au niveau géométrique.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <!-- SECTION 3 : PHYSIQUE ET CYCLE JOUR NUIT -->
+            <h2 class="section-title">3. Environnement Dynamique et Performances</h2>
+            <div class="about-text">
+                <p>Le monde évolue de manière autonome grâce à un système de <strong>cycle jour/nuit dynamique</strong> interpolant les couleurs du ciel, de l'éclairage hémisphérique et la direction du soleil (gérant les ombres portées).</p>
+                <p>Le moteur intègre également un système physique gérant la détection de collision en deux phases (Broad-Phase spatiale et Narrow-Phase AABB) avec résolution cinématique (KCC) glissante contre les murs.</p>
+            </div>
+
+            <div class="image-grid" style="align-items: center;">
+                <div>
+                    <img src="images/voxelEngine/time_crepuscule.png" alt="Cycle dynamique - Crépuscule">
+                    <p class="figure-caption">Mise à jour dynamique de l'éclairage ambiant lors du crépuscule.</p>
+                </div>
+                <div>
+                    <img src="images/voxelEngine/graphiques_performances.png" alt="Graphiques de profilage et performances">
+                    <p class="figure-caption">Outils de profilage intégrés : suivi du temps de frame (ms), des allocations mémoires et des temps de génération des Chunks.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 - Thomas Barascud. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>

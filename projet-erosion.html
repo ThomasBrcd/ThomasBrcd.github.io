@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation d'Érosion | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#projects">&larr; Retour aux projets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero" style="height: auto; padding: 120px 20px 60px 20px;">
+        <div class="hero-content" style="max-width: 900px; margin: auto;">
+            <p class="hero-subtitle">Projet de Recherche (C++ / OpenGL)</p>
+            <h1>Simulation d'Érosion Hydraulique et Thermique sur GPU</h1>
+            <div class="tags" style="justify-content: center; margin-top: 20px; margin-bottom: 30px;">
+                <span class="tag tag-main">C++</span>
+                <span class="tag tag-main">OpenGL Compute Shaders</span>
+                <span class="tag">Mécanique des fluides</span>
+                <span class="tag">Shallow Water Equations</span>
+            </div>
+            
+            <div class="about-text" style="text-align: left; margin-top: 40px;">
+                <p>Ce projet de recherche vise à simuler l'évolution géologique d'un terrain en temps réel[cite: 1047]. L'objectif était de modéliser mathématiquement l'action de l'eau et de la gravité sur la croûte terrestre (paradigme Eulérien), tout en maintenant une fréquence d'exécution interactive dépassant les 900 images par seconde grâce à l'architecture massivement parallèle des processeurs graphiques[cite: 1104, 1107].</p>
+            </div>
+
+            <video autoplay loop muted playsinline class="article-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <source src="images/erosion/VideoTER.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la balise vidéo.
+            </video>
+            <p class="figure-caption">Démonstration en temps réel de l'écoulement des fluides et de l'altération du terrain.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            
+            <h2 class="section-title">1. Modélisation Mathématique et Fluides</h2>
+            <div class="about-text">
+                <p>Résoudre les équations de Navier-Stokes en 3D est computationnellement trop lourd pour du temps réel[cite: 1181, 1185]. Nous avons donc opté pour une réduction en 2.5D en utilisant les <strong>Shallow Water Equations (SWE)</strong>, qui modélisent la conservation de la masse et de la quantité de mouvement[cite: 1191, 1195].</p>
+                <ul>
+                    <li><strong>Modèle des Tuyaux Virtuels :</strong> L'écoulement de l'eau entre les cellules de la grille est calculé via des tuyaux virtuels, propulsé par la différence de pression hydrostatique[cite: 1213, 1215].</li>
+                    <li><strong>Advection semi-Lagrangienne :</strong> Pour transporter les sédiments arrachés au sol sans créer d'accumulations aberrantes, l'algorithme procède par "backtracing" en remontant le vecteur vitesse du fluide[cite: 1496, 1497].</li>
+                </ul>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/erosion/virtual-pipes.png" alt="Modèle des tuyaux virtuels">
+                    <p class="figure-caption">Représentation conceptuelle du modèle des tuyaux virtuels gérant les échanges bidimensionnels[cite: 1072].</p>
+                </div>
+                <div>
+                    <img src="images/erosion/before-after.png" alt="Comparaison avant après érosion">
+                    <p class="figure-caption">Comparaison entre un relief brut (bruit procédural) et sa restructuration organique par la simulation[cite: 1064].</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">2. Architecture GPU et Compute Shaders</h2>
+            <div class="about-text">
+                <p>Pour traiter l'évolution de plus d'un million de cellules simultanément (grille de 1024x1024), l'algorithme a été intégralement déporté sur le GPU via les <strong>Compute Shaders</strong> d'OpenGL[cite: 1271, 1278]. Les variables physiques (hauteur d'eau, substrat, sédiments) sont stockées dans des textures en virgule flottante 32-bits (GL_R32F) pour éviter les erreurs d'arrondi[cite: 1285, 1286].</p>
+                <ul>
+                    <li><strong>Gestion de la concurrence (Race Conditions) :</strong> La parallélisation massive pose le risque de corruption de la mémoire. Nous utilisons un mécanisme de <em>Double Tamponnage (Ping-Pong Buffering)</em> séparant la lecture de l'état (i-1) de l'écriture du nouvel état (i)[cite: 1321, 1323].</li>
+                    <li><strong>Synchronisation matérielle :</strong> Des barrières de mémoire formelles (<code>glMemoryBarrier</code>) sont injectées entre chaque passe fonctionnelle du shader pour forcer le processeur graphique à purger ses caches avant de continuer[cite: 1328, 1329].</li>
+                </ul>
+            </div>
+
+            <img src="images/erosion/ping-pong-buffering.png" alt="Architecture du double tamponnage" class="article-image">
+            <p class="figure-caption">Architecture de synchronisation en mémoire vidéo. L'état validé demeure en lecture seule sous la synchronisation stricte des barrières mémoire[cite: 1344].</p>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">3. Instabilité Gravitationnelle (Érosion Thermique)</h2>
+            <div class="about-text">
+                <p>Le modèle hydraulique isolé générant des falaises verticales instables, nous y avons couplé un solveur d'érosion thermique[cite: 1356, 1357].</p>
+                <ul>
+                    <li><strong>Voisinage de Moore :</strong> L'effondrement gravitationnel est évalué sur 8 directions (et non 4) pour éviter l'apparition d'artefacts géométriques en pyramide[cite: 1359, 1360].</li>
+                    <li><strong>Angle de Talus :</strong> Si le gradient de pente excède l'angle de repos spécifique au coefficient de dureté locale de la roche, le volume de terre glisse pour former des cônes d'éboulis naturels[cite: 1364, 1365].</li>
+                    <li><strong>Approche par Rassemblement (Gather) :</strong> Pour éviter les opérations atomiques trop coûteuses sur GPU, une cellule lit les flux préparés par ses 8 voisines pour calculer son propre bilan, garantissant le déterminisme[cite: 1378, 1379].</li>
+                </ul>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/erosion/thermal-erosion-compare.png" alt="Impact érosion thermique">
+                    <p class="figure-caption">Formation de cônes d'éboulis naturels après l'effondrement gravitationnel[cite: 1089].</p>
+                </div>
+                <div>
+                    <img src="images/erosion/titicaca-currents.png" alt="Lignes de courant lac Titicaca">
+                    <p class="figure-caption">Lignes de courant formées au fond de l'eau grâce à la modélisation des impacts hydrodynamiques[cite: 1079].</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">4. Rendu Visuel et Performances</h2>
+            <div class="about-text">
+                <p>La visualisation topographique est découplée de la simulation physique. Le rendu utilise le <strong>Vertex Displacement</strong> : le Vertex Shader accède à la texture de hauteur (VRAM) et déforme un maillage plan à la volée[cite: 1260, 1264].</p>
+                <p>Les normales de surface sont calculées dynamiquement dans le Fragment Shader via la fonction d'échantillonnage <code>texelFetch</code>, évitant le coût d'écriture d'une texture de normales dédiée[cite: 1265, 1266].</p>
+                
+                <div style="background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 10px;">Bilan d'Optimisation (Grille 1024x1024)</h3>
+                    <p style="margin-bottom: 0;">L'implémentation initiale sur CPU nécessitait environ <strong>1722 ms</strong> par cycle (soit ~0.58 FPS). Le portage complet de notre architecture sur les Compute Shaders a permis de ramener ce temps de cycle à <strong>1.0 ms</strong>, autorisant une exécution fluide à plus de <strong>960 FPS</strong> en temps réel[cite: 1395, 1396, 1397].</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 50px; color: var(--text-color);">Galerie des résultats morphologiques</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                
+                <div>
+                    <img src="images/erosion/erosion-11a-alpes.png" alt="Terrain de base" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(a)</strong> Terrain de base (Alpes)</p>
+                </div>
+
+                <div>
+                    <img src="images/erosion/erosion-11b-courants.png" alt="Lignes de courant" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(b)</strong> Lignes de courant</p>
+                </div>
+
+                <div>
+                    <img src="images/erosion/erosion-11c-deltas.png" alt="Deltas et berges" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(c)</strong> Deltas et berges</p>
+                </div>
+
+                <div>
+                    <img src="images/erosion/erosion-11d-details.png" alt="Détails d'érosion" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(d)</strong> Détails d'érosion</p>
+                </div>
+
+                <div>
+                    <img src="images/erosion/erosion-11e-scientifique.png" alt="Vue non texturée" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(e)</strong> Vue non texturée (scientifique)</p>
+                </div>
+
+                <div>
+                    <img src="images/erosion/erosion-11f-resultat.png" alt="Résultat après simulation" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption" style="margin-top: 10px;"><strong>(f)</strong> Résultat après simulation</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Développeur Informatique Graphique. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>

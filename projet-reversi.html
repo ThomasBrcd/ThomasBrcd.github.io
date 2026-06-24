@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Reversi & Réseau | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#projects">&larr; Retour aux projets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero" style="height: auto; padding: 120px 20px 60px 20px;">
+        <div class="hero-content" style="max-width: 900px; margin: auto;">
+            <p class="hero-subtitle">Jeu complet (C++ / Raylib / SFML)</p>
+            <h1>Othello / Reversi : IA Minimax & Multijoueur</h1>
+            <div class="tags" style="justify-content: center; margin-top: 20px; margin-bottom: 30px;">
+                <span class="tag tag-main">C++</span>
+                <span class="tag tag-main">Raylib</span>
+                <span class="tag tag-main">SFML Network</span>
+                <span class="tag">IA (Minimax & Alpha-Beta)</span>
+                <span class="tag">Node.js (Relais)</span>
+            </div>
+            
+            <div class="about-text" style="text-align: left; margin-top: 40px;">
+                <p>Développement de A à Z d'un jeu de Reversi (Othello) complet, doté d'une interface graphique, d'un mode multijoueur en ligne (LAN et Internet) et d'une Intelligence Artificielle avancée capable d'anticiper les coups de l'adversaire. Ce projet a été conçu en respectant scrupuleusement l'architecture logicielle MVC (Modèle-Vue-Contrôleur) pour garantir un code modulaire et évolutif.</p>
+            </div>
+
+            <img src="images/reversi/plateau_debut_partie.png" alt="Aperçu du plateau de Reversi" class="article-image">
+            <p class="figure-caption">Interface en jeu gérée par Raylib, affichant le plateau de Reversi en début de partie.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            
+            <h2 class="section-title">1. Architecture MVC et Rendu Graphique</h2>
+            <div class="about-text">
+                <p>Pour assurer la maintenabilité du projet, la logique métier est strictement séparée de l'affichage matériel via le patron de conception <strong>MVC</strong>. Le Modèle gère la grille et les retournements en chaîne, la Vue utilise <strong>Raylib</strong> pour le rendu matériel, et le Contrôleur gère la machine à états (Menu, Choix PvP, En Ligne, Écran de Fin).</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/reversi/menu_principale_jeu.png" alt="Menu principal">
+                    <p class="figure-caption">Menu principal interactif géré par le GameController.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/Page_fin_de_partie.png" alt="Écran de fin de partie">
+                    <p class="figure-caption">Écran de fin de partie avec calcul dynamique des scores.</p>
+                </div>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/reversi/exemple_coup_avant.png" alt="Avant un coup">
+                    <p class="figure-caption">Avant : L'interface met en évidence les coups valides (Hint).</p>
+                </div>
+                <div>
+                    <img src="images/reversi/exemple_coup_apres.png" alt="Après un coup">
+                    <p class="figure-caption">Après : Le Modèle applique les règles de retournement multidirectionnel.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">2. L'Intelligence Artificielle (Minimax & Alpha-Beta)</h2>
+            <div class="about-text">
+                <p>L'IA repose sur l'algorithme <strong>Minimax</strong>, optimisé par un élagage <strong>Alpha-Beta</strong>. Pour décupler les performances, l'IA utilise le <em>Move Ordering</em> : elle trie les coups valides à l'aide d'une fonction d'évaluation rapide (<code>evaluateSimpleMove</code>) avant d'explorer l'arbre, permettant à l'élagage de couper massivement les branches inutiles.</p>
+            </div>
+
+            <div class="image-grid" style="align-items: center;">
+                <div>
+                    <img src="images/reversi/mode_IA.png" alt="Sélection du style de l'IA">
+                </div>
+                <div>
+                    <p style="color: var(--text-muted); font-size: 1rem;">L'architecture logicielle permet d'instancier plusieurs profils d'Intelligence Artificielle (Offensive, Défensive, Équilibrée) en modifiant dynamiquement la pondération des heuristiques d'évaluation.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: var(--accent-color);">2.1. Heuristiques Spatiales et Stratégiques</h3>
+            <div class="about-text">
+                <p>Le modèle ne compte pas simplement ses pions, il évalue le contrôle spatial en attribuant des scores (positifs ou négatifs) selon des critères positionnels stricts :</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div>
+                    <img src="images/reversi/controle_des_coins.png" alt="Contrôle des coins" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Contrôle des coins (+1000 pts) :</strong> Pions intouchables et stratégiques.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/case_dangereuses.png" alt="Cases dangereuses" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Cases Dangereuses (-150 pts) :</strong> Pénalité pour les cases X adjacentes aux coins non sécurisés.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/motif_strategique.png" alt="Motif stratégique" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Motifs Stratégiques :</strong> Reconnaissance de structures (bords sécurisés).</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div>
+                    <img src="images/reversi/critère_mobililté.png" alt="Critère de mobilité" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Mobilité :</strong> Maximiser ses options tout en réduisant celles de l'adversaire.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/critère_stabilitiés.png" alt="Critère de stabilité" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Stabilité :</strong> Évaluation des pions impossibles à retourner.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/critère_parité.png" alt="Critère de parité" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Parité :</strong> S'assurer de jouer le dernier coup dans les zones vides.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: var(--accent-color);">2.2. Analyse des Performances et Adaptabilité</h3>
+            <div class="about-text">
+                <p>Pour contrer le changement de physionomie du jeu, l'IA modifie l'importance de ses heuristiques en temps réel. Par exemple, la mobilité est cruciale en début de partie (Early Game), tandis que la maximisation brute du nombre de pions prend le pas à la fin (Late Game).</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/reversi/evolution_poids_heristiques_IA.png" alt="Évolution des poids heuristiques">
+                    <p class="figure-caption">Courbes démontrant l'adaptation dynamique des poids (Mobilité, Stabilité, Coins) au fil des 60 tours.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/temps_reflexion_ia_au_cours_partie.png" alt="Temps de réflexion IA">
+                    <p class="figure-caption">Profilage du temps de réflexion : démonstration de l'efficacité de l'élagage Alpha-Beta face à l'explosion combinatoire.</p>
+                </div>
+            </div>
+
+            <div class="image-grid" style="align-items: center;">
+                <div>
+                    <img src="images/reversi/resultat_confrontation_ia.png" alt="Résultats des confrontations">
+                    <p class="figure-caption">Analyse statistique des taux de victoire entre différents profils d'IA.</p>
+                </div>
+                <div>
+                    <img src="images/reversi/image_plateau_fin_de_partie.png" alt="Plateau rempli en fin de partie">
+                    <p class="figure-caption">Résultat final d'une partie dominée par l'Intelligence Artificielle.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">3. Architecture Réseau Multijoueur</h2>
+            <div class="about-text">
+                <p>Le jeu propose un mode multijoueur synchrone fonctionnant sur une architecture Client-Serveur robuste.</p>
+                <ul>
+                    <li><strong>Cœur Réseau (SFML) :</strong> Le serveur repose sur des sockets TCP non-bloquants (SFML Network). Il centralise l'état de la partie, valide l'ordre des tours et diffuse les paquets de mise à jour aux clients synchronisés.</li>
+                    <li><strong>Passerelle Internet via Node.js :</strong> Permettre à des joueurs de se connecter via Internet requiert normalement l'ouverture des ports (Port Forwarding), une manipulation complexe. Pour contourner cela, un script de relais asynchrone en <strong>Node.js</strong> a été développé, couplé à l'outil de tunnel <em>Bore</em>. Le script réceptionne le trafic externe et effectue une tuyauterie logicielle (<code>socket.pipe()</code>) directe vers le serveur C++ local, rendant le multijoueur fonctionnel "out of the box".</li>
+                </ul>
+            </div>
+
+            <img src="images/reversi/Mode_multi.png" alt="Menu Multijoueur" class="article-image" style="max-width: 500px; display: block; margin: 30px auto;">
+            <p class="figure-caption">Menu de sélection réseau gérant les connexions locales (LAN) et distantes (Internet).</p>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Développeur Informatique Graphique. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>

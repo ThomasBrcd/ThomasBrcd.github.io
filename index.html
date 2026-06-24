@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio | Développeur Informatique Graphique</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="#about">À propos</a></li>
+                <li><a href="#skills">Compétences</a></li>
+                <li><a href="#projects">Projets</a></li>
+                <li><a href="#contact" class="btn-nav">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <p class="hero-subtitle">Étudiant Master 1 IMAGINE (Montpellier)</p>
+            <h1>Développeur Informatique Graphique & Rendu Temps Réel</h1>
+            <p class="hero-description">
+                Passionné par l'architecture des moteurs de jeux, la simulation physique et l'optimisation à bas niveau. Spécialisé en <strong>C++</strong> et <strong>OpenGL</strong>.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">Découvrir mes projets</a>
+                <a href="#contact" class="btn btn-secondary">Me contacter</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">À propos de moi</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>Actuellement étudiant au sein du parcours <strong>IMAGINE</strong> à l'Université de Montpellier, je me spécialise dans la synthèse d'image et le rendu temps réel.</p>
+                    <p>Mon objectif est de mettre mes compétences au service de la R&D ou de la création d'outils (Tools Engineering). Curieux et polyvalent, je suis particulièrement motivé par l'application des technologies 3D à des domaines à fort impact, tels que la recherche médicale, les simulations environnementales ou le jeu vidéo.</p>
+                    <p><em>Ma philosophie : Apprendre, apprendre et apprendre.</em></p>
+                </div>
+            </div>
+
+            <section id="about" class="about-section">
+                <div class="about-container">
+                    <div class="about-image">
+                        <img src="images/Photo_Profil.png" alt="Photo de Thomas Barascud">
+                    </div>
+                    <div class="about-text">
+                        <h2>À propos</h2>
+                        <p>Développeur Informatique Graphique passionné par l'architecture bas niveau, le C++ et la résolution de défis algorithmiques complexes. Créateur de moteurs 3D et Maker à mes heures perdues...</p>
+                        
+                        <a href="cv.pdf" class="btn-cv" download>Télécharger mon CV (PDF)</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section id="skills" class="section bg-alt">
+        <div class="container">
+            <h2 class="section-title">Compétences Techniques</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Cœur d'expertise</h3>
+                    <div class="tags">
+                        <span class="tag tag-main">C++</span>
+                        <span class="tag tag-main">OpenGL</span>
+                        <span class="tag tag-main">Moteurs Graphiques</span>
+                        <span class="tag tag-main">Simulation Temps Réel</span>
+                        <span class="tag tag-main">Traitement d'image</span>
+                        <span class="tag tag-main">Compression</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Compétences complémentaires</h3>
+                    <div class="tags">
+                        <span class="tag">Java (Mobile)</span>
+                        <span class="tag">Web (HTML/CSS/JS/Vue.js/node.js)</span>
+                        <span class="tag">Bases de données (SQL/Firebase)</span>
+                        <span class="tag">Deep Learning & IA</span>
+                        <span class="tag">Python</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Veille & Perspectives</h3>
+                    <div class="tags">
+                        <span class="tag tag-learning">Unreal Engine (En cours)</span>
+                        <span class="tag tag-learning">Vulkan / DirectX (Futur)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">Projets Réalisés</h2>
+            <p class="section-subtitle">Sélection de travaux techniques et académiques</p>
+            
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <a href="projet-portal.html" class="project-image-link">
+                        <div class="project-image">
+                            <img src="images/portal/Portail_Rendu_Recusif_proj_Oblique.png" alt="Aperçu du moteur Portal">
+                            <div class="image-overlay">
+                                <span>Découvrir le projet &rarr;</span>
+                            </div>
+                            <div class="project-tags-overlay">
+                                <span class="tag-overlay">C++</span>
+                                <span class="tag-overlay">OpenGL</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="project-info">
+                        <h3>Moteur de Portail & Génération</h3>
+                        <p>Clone technique de Portal avec génération procédurale, physique avancée, clonage visuel et illumination globale par SH Probes.</p>
+                        <a href="projet-portal.html" class="project-link">Analyse technique &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <a href="projet-minecraft.html" class="project-image-link">
+                        <div class="project-image">
+                            <img src="images/voxelEngine/time_crepuscule.png" alt="Aperçu du moteur Voxel">
+                            <div class="image-overlay">
+                                <span>Découvrir le projet &rarr;</span>
+                            </div>
+                            <div class="project-tags-overlay">
+                                <span class="tag-overlay">C++</span>
+                                <span class="tag-overlay">ECS</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="project-info">
+                        <h3>Voxel Game Engine</h3>
+                        <p>Moteur de voxels optimisé : Multi-threading, architecture ECS, rendu PBR, Greedy Meshing et Occlusion Culling.</p>
+                        <a href="projet-minecraft.html" class="project-link">Analyse technique &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <a href="projet-erosion.html" class="project-image-link">
+                        <div class="project-image">
+                            <img src="images/erosion/erosion-hero.png" alt="Simulation d'érosion">
+                            <div class="image-overlay">
+                                <span>Découvrir le projet &rarr;</span>
+                            </div>
+                            <div class="project-tags-overlay">
+                                <span class="tag-overlay">Simulation</span>
+                                <span class="tag-overlay">C++</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="project-info">
+                        <h3>Simulation d'Érosion Temps Réel</h3>
+                        <p>Simulateur d'érosion hydraulique et thermique, gérant dynamiquement les flux d'eau et les transports de sédiments.</p>
+                        <a href="projet-erosion.html" class="project-link">Analyse technique &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <a href="projet-reversi.html" class="project-image-link">
+                        <div class="project-image">
+                            <img src="images/reversi/plateau_debut_partie.png" alt="IA Reversi">
+                            <div class="image-overlay">
+                                <span>Découvrir le projet &rarr;</span>
+                            </div>
+                            <div class="project-tags-overlay">
+                                <span class="tag-overlay">IA</span>
+                                <span class="tag-overlay">C++</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="project-info">
+                        <h3>IA de Réflexion - Reversi</h3>
+                        <p>Développement d'un moteur de jeu et d'une IA capable d'anticiper et de planifier des stratégies à plus de 8 coups d'avance.</p>
+                        <a href="projet-reversi.html" class="project-link">Analyse technique &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <a href="projet-overcook.html" class="project-image-link">
+                        <div class="project-image">
+                            <img src="images/overcook/jeu_overcook.png" alt="Aperçu OvercookMini">
+                            <div class="image-overlay">
+                                <span>Découvrir le projet &rarr;</span>
+                            </div>
+                            <div class="project-tags-overlay">
+                                <span class="tag-overlay">Python</span>
+                                <span class="tag-overlay">IA Multi-Agents</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="project-info">
+                        <h3>OvercookMini : IA & PCG</h3>
+                        <p>Environnement de simulation multi-agents (Python). Moteur 2D custom, génération procédurale de cartes (PCG) et IA coopératives avec pathfinding dynamique.</p>
+                        <a href="projet-overcook.html" class="project-link">Analyse technique &rarr;</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section bg-alt">
+        <div class="container contact-container">
+            <h2 class="section-title">Restons en contact</h2>
+            <p>Je suis actuellement ouvert aux opportunités de stages, alternance et projets collaboratifs ou discussions techniques.</p>
+            <div class="contact-links">
+                <a href="mailto:thomasbarascud556@gmail.com" class="btn btn-primary">Envoyer un Email</a>
+                <a href="https://github.com/ThomasBrcd" target="_blank" class="btn btn-secondary">GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Développeur Informatique Graphique. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>

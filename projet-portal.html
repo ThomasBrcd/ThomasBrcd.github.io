@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Portal | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#projects">&larr; Retour aux projets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero" style="height: auto; padding: 120px 20px 60px 20px;">
+        <div class="hero-content" style="max-width: 900px; margin: auto;">
+            <p class="hero-subtitle">Moteur de Jeu Custom (C++ / OpenGL)</p>
+            <h1>Moteur Portal & Génération Procédurale</h1>
+            <div class="tags" style="justify-content: center; margin-top: 20px; margin-bottom: 30px;">
+                <span class="tag tag-main">C++</span>
+                <span class="tag tag-main">OpenGL</span>
+                <span class="tag">PBR & SH Probes</span>
+                <span class="tag">Physique Custom</span>
+                <span class="tag">Wang Tiling</span>
+            </div>
+            
+            <div class="about-text" style="text-align: left; margin-top: 40px;">
+                <p>Ce projet visait à concevoir un moteur de jeu complet inspiré des mécaniques de Portal. L'objectif principal était de relever un triple défi : maintenir une cohérence spatiale parfaite pour des portails récursifs, implémenter un pipeline de rendu moderne (PBR), et créer un workflow robuste permettant de lier l'éditeur Blender au moteur C++.</p>
+            </div>
+
+            <video class="portfolio-video" controls muted poster="images/portal/Illustration_clone_visuel_traversé.png">
+                <source src="videos/demo-portal.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos HTML5.
+            </video>
+            <p class="figure-caption">Démonstration du gameplay : fluidité des portails, clonage visuel et moteur physique.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            
+            <h2 class="section-title">1. Workflow Blender & Génération Procédurale</h2>
+            <div class="about-text">
+                <p>Dans notre pipeline, Blender dépasse son rôle d'outil de modélisation pour devenir un véritable éditeur de niveau. Le moteur parse les fichiers glTF et utilise les métadonnées (Custom Properties) pour instancier dynamiquement la logique C++ (lumières, points d'apparition, surfaces "portalables").</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/custom_properties_Blender.png" alt="Éditeur Blender avec Custom Properties">
+                    <p class="figure-caption">Vue de la salle et des Custom Properties depuis l'éditeur Blender.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Rendu_Salle_Interactif_Ex_Blender.png" alt="Rendu en jeu">
+                    <p class="figure-caption">Rendu final et interactif de cette même salle dans le moteur.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">2. Moteur Physique "From Scratch" & CCD</h2>
+            <div class="about-text">
+                <p>Pour assurer une compatibilité parfaite avec les portails, la physique a été développée intégralement en interne avec un solveur d'impulsions et une stabilisation de Baumgarte.</p>
+                <ul>
+                    <li><strong>Détection Continue des Collisions (CCD) :</strong> Évite l'effet de tunneling pour les objets traversant les portails à grande vitesse.</li>
+                    <li><strong>Optimisation CPU (Sleeping System) :</strong> Le moteur désactive les calculs physiques des objets inactifs.</li>
+                </ul>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Cube_SleepingSystem.png" alt="Cube au repos (Sleeping System)">
+                    <p class="figure-caption">Cube au repos : le système de "sleeping" désactive ses calculs physiques.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Cube_Activ_By_Player_Solveur_Impulsion.png" alt="Cube en mouvement">
+                    <p class="figure-caption">Réveil de l'objet suite à l'action du solveur d'impulsions.</p>
+                </div>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/OBB_Visualisation.png" alt="Visualisation OBB">
+                    <p class="figure-caption">OBB épousant parfaitement la rotation du cube sur un plan incliné.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Primitive_Collision_Statique_Mur_Plan_Incliné.png" alt="Primitives statiques">
+                    <p class="figure-caption">Primitives de collisions statiques et plans infinis gérés par le moteur.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">3. La Mécanique des Portails (Seamless)</h2>
+            <div class="about-text">
+                <p>Créer l'illusion d'un espace continu a nécessité une synchronisation visuelle et physique complexe :</p>
+                <ul>
+                    <li><strong>Stencil Buffer & Clipping Oblique :</strong> Utilisation d'une matrice de projection oblique pour aligner le plan de coupe de la caméra virtuelle avec le portail.</li>
+                    <li><strong>Clonage Visuel :</strong> Lorsqu'une entité traverse un portail, le moteur génère dynamiquement un "clone" à la sortie pour une transition parfaite.</li>
+                </ul>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Portail_Rendu_Recusif_proj_Oblique.png" alt="Rendu récursif">
+                    <p class="figure-caption">Rendu récursif et clipping oblique permettant de voir au travers.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Illustration_clone_visuel_traversé.png" alt="Clonage visuel">
+                    <p class="figure-caption">Illustration du clonage visuel lors de la traversée du joueur.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">4. Illumination Globale Hybride & Rendu PBR</h2>
+            <div class="about-text">
+                <p>Le moteur intègre un pipeline Forward PBR basé sur le modèle de micro-facettes GGX. Pour pallier l'uniformité de l'Image Based Lighting (IBL), nous avons utilisé des <strong>Sondes Harmoniques Sphériques (SH Probes)</strong> pré-calculées et mises en cache.</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Visualisation_SH_PROBE.png" alt="Sondes harmoniques">
+                    <p class="figure-caption">Visualisation des sondes locales capturant l'irradiance de la salle.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Visualisation_Onde_Harmonique_Sur_Cube.png" alt="Onde harmonique sur cube">
+                    <p class="figure-caption">Visualisation de l'apport direct des sondes harmoniques sur un objet.</p>
+                </div>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Rendu_Beton_Diffusant.png" alt="Béton diffusant">
+                    <p class="figure-caption">Rendu du matériau béton diffusant (surfaces "portalables").</p>
+                </div>
+                <div>
+                    <img src="images/portal/Rendu_Metalique_GGX.png" alt="Métal GGX">
+                    <p class="figure-caption">Rendu du matériau métallique avec reflets spéculaires GGX marqués.</p>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">5. Logique, Interactions et Game Feel</h2>
+            <div class="about-text">
+                <p>Les entités interactives du jeu communiquent entre elles : boutons de pression avec filtres intelligents, portes et plateformes mobiles interpolées (Smootherstep).</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Bouton_Pression_activé_par_cube.png" alt="Bouton pression">
+                    <p class="figure-caption">Bouton pression activé physiquement par le poids d'un cube.</p>
+                </div>
+                <div>
+                    <img src="images/portal/interupteur_manuelle.png" alt="Interrupteur manuel">
+                    <p class="figure-caption">Interrupteur sur piédestal nécessitant une interaction directe.</p>
+                </div>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Plateforme_mouvement.png" alt="Plateforme">
+                    <p class="figure-caption">Plateforme en mouvement gérée par waypoints.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Porte.png" alt="Porte">
+                    <p class="figure-caption">Porte automatisée s'ouvrant via les interactions du joueur.</p>
+                </div>
+            </div>
+
+            <img src="images/portal/Panneau_Reglage_cam.png" alt="Menu des réglages de la caméra" class="article-image" style="max-width: 500px; display: block; margin: 30px auto;">
+            <p class="figure-caption">Paramètres de caméra (Head Bobbing, Tilt, FOV dynamique) pour renforcer l'immersion.</p>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">6. Profils Graphiques et Optimisation</h2>
+            <div class="about-text">
+                <p>Pour garantir la jouabilité sur toutes les machines, nous avons implémenté des systèmes de Culling avancés (Frustum, Room PVS, Occlusion) ainsi que des paliers de qualité adaptatifs gérant dynamiquement l'activation des ombres et du post-traitement.</p>
+            </div>
+
+            <div class="image-grid">
+                <div>
+                    <img src="images/portal/Vue_Normal_Joueur.png" alt="Vue normale du joueur">
+                    <p class="figure-caption">Vue normale du joueur dans une salle.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Vue_montrant_elagage_Joueur.png" alt="Vue montrant l'élagage (culling)">
+                    <p class="figure-caption">Visualisation de l'élagage : la géométrie hors champ et les salles adjacentes masquées sont supprimées (Room Culling & Frustum).</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div>
+                    <img src="images/portal/Mode_patato_Blin_Phong.png" alt="Mode Potato" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Potato :</strong> Modèle Blinn-Phong, sans PBR ni ombres.</p>
+                </div>
+                <div>
+                    <img src="images/portal/Medium_PBR_IBR_Ombre_statique_Bake.png" alt="Mode Medium" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Medium :</strong> PBR et IBL actifs, ombres cuites (baked).</p>
+                </div>
+                <div>
+                    <img src="images/portal/Ultra_PBR_SSAO_Bloom_Ombre_dynamique.png" alt="Mode Ultra" style="width:100%; border-radius:8px; border: 1px solid var(--border-color);">
+                    <p class="figure-caption"><strong>Ultra :</strong> PBR complet, SSAO, Bloom et ombres dynamiques.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Développeur Informatique Graphique. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>

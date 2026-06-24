@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OvercookMini : IA Multi-Agents | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Graphic<span>Dev</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#projects">&larr; Retour aux projets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero" style="height: auto; padding: 120px 20px 60px 20px;">
+        <div class="hero-content" style="max-width: 900px; margin: auto;">
+            <p class="hero-subtitle">Simulation & Intelligence Artificielle (Python / Tkinter)</p>
+            <h1>OvercookMini : Système Multi-Agents et Génération Procédurale</h1>
+            <div class="tags" style="justify-content: center; margin-top: 20px; margin-bottom: 30px;">
+                <span class="tag tag-main">Python</span>
+                <span class="tag tag-main">Tkinter</span>
+                <span class="tag">Système Multi-Agents</span>
+                <span class="tag">Génération Procédurale (PCG)</span>
+                <span class="tag">Analyse de Données</span>
+            </div>
+            
+            <div class="about-text" style="text-align: left; margin-top: 40px;">
+                <p>Développement d'un environnement de simulation inspiré du jeu <em>Overcooked</em>, conçu pour évaluer la coopération entre plusieurs Intelligences Artificielles. Le projet intègre un moteur 2D "from scratch" en Tkinter, un générateur de niveaux procéduraux garantissant des topologies jouables, et un système de prise de décision autonome (Pathfinding dynamique, allocation des tâches, résolution des conflits).</p>
+            </div>
+
+            <video autoplay loop muted playsinline class="article-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <source src="images/overcook/video2_coupee.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la balise vidéo.
+            </video>
+            <p class="figure-caption">Simulation en temps réel : Deux équipes d'IA coopératives (2vs2) s'affrontent sur une carte générée procéduralement.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            
+            <h2 class="section-title">1. Architecture du Moteur et Modélisation (MVC)</h2>
+            <div class="about-text">
+                <p>Le moteur du jeu a été développé nativement en Python à l'aide de la bibliothèque <strong>Tkinter</strong>. L'architecture sépare strictement les données de la logique d'affichage :</p>
+                <ul>
+                    <li><strong>Gestion des états (State Machine) :</strong> Implémentation d'un cycle de vie rigoureux pour les aliments (<code>SORTI_DU_BAC</code>, <code>COUPE</code>, <code>CUIT</code>) et la validation dynamique des recettes.</li>
+                    <li><strong>Moteur asynchrone :</strong> Une boucle de jeu personnalisée (Tick) gère simultanément les interpolations de mouvements fluides (dt), les temps de cuisson, et les actions bloquantes des agents sans paralyser l'interface graphique.</li>
+                </ul>
+            </div>
+
+            <img src="images/overcook/jeu_overcook.png" alt="Aperçu du jeu Overcook" class="article-image" style="max-width: 700px; display: block; margin: 0 auto;">
+            <p class="figure-caption">Rendu graphique de la grille, des stations interactives (Fours, Découpe, Service) et des indicateurs de progression.</p>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">2. Génération Procédurale de Cartes (PCG)</h2>
+            <div class="about-text">
+                <p>Pour soumettre les IA à des environnements imprévisibles, nous avons conçu un algorithme de génération de niveaux garantissant systématiquement une carte valide et "navigable". L'algorithme valide la topologie via plusieurs vérifications mathématiques avant d'approuver une grille :</p>
+                <ul>
+                    <li><strong>Algorithme de Flood Fill :</strong> Vérification de la connexité (<code>zone_connexe</code>) pour s'assurer qu'aucune zone contenant une station n'est inaccessible.</li>
+                    <li><strong>Prévention des "Goulots d'étranglement" :</strong> Détection et interdiction des couloirs de largeur 1 (<code>check_min_width</code>) pour éviter les blocages insolubles entre deux agents.</li>
+                    <li><strong>Analyse Géométrique :</strong> Détection des formes en "U" (<code>has_u_shape</code>) pour empêcher la création de pièges ("dead-ends") qui pénaliseraient injustement le pathfinding.</li>
+                </ul>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">3. Prise de Décision et Coopération Multi-Agents</h2>
+            <div class="about-text">
+                <p>Le comportement des agents (<code>agent.py</code>) est régi par un arbre de décision complexe évaluant l'état de l'environnement à chaque <em>tick</em>. La véritable difficulté réside dans la <strong>coopération</strong> entre deux instances autonomes partageant le même espace :</p>
+            </div>
+
+            <div class="image-grid" style="align-items: start;">
+                <div>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem; margin-bottom: 10px;">Pathfinding et Évitement Dynamique</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-color);">La navigation utilise l'algorithme <strong>BFS (Breadth-First Search)</strong>. Plutôt que de considérer les joueurs comme des entités transparentes, le partenaire est traité comme un <em>obstacle dynamique</em>. L'algorithme anticipe la trajectoire du partenaire (les deux prochaines cases de son chemin) pour recalculer sa propre route en temps réel.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--accent-color); font-size: 1.1rem; margin-bottom: 10px;">Résolution des Deadlocks (Blocages)</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-color);">Malgré l'évitement, des situations de face-à-face surviennent. L'équipe a implémenté une mécanique de résolution de stagnation (<code>_check_blockage</code>) : si un agent détecte qu'il n'a pas bougé depuis 2 secondes, il force une manœuvre de dégagement (retraite vers une case libre) pour céder le passage. Si le blocage persiste au-delà de 5 secondes, un "Hard Reset" annule sa tâche en cours.</p>
+                </div>
+            </div>
+
+            <div class="about-text" style="margin-top: 20px;">
+                <h3 style="color: var(--accent-color); font-size: 1.1rem; margin-bottom: 10px;">Répartition Intelligente des Tâches</h3>
+                <p>Pour optimiser le rendement, l'agent scrute les actions de son partenaire. Il trie les recettes disponibles selon sa "stratégie" (orientée rapidité ou complexité) et sélectionne la plus optimale tout en <strong>excluant la recette que le partenaire est déjà en train de préparer</strong>. De même, si deux agents visent la même station, l'IA calcule la distance de chacun et cède la priorité au plus proche.</p>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
+
+            <h2 class="section-title">4. Benchmarking et Analyse Statistique</h2>
+            <div class="about-text">
+                <p>Afin de prouver empiriquement l'efficacité de l'algorithme de coopération, un outil de simulation accélérée a été développé, permettant de lancer des centaines de parties automatisées, générant des jeux de données complets (scores, temps d'inactivité, coûts de déplacement). Les données ont ensuite été visualisées sous forme de tableaux de bord.</p>
+            </div>
+
+            <img src="images/overcook/stats_overcook.png" alt="Graphiques de Benchmark de l'IA" class="article-image">
+            <p class="figure-caption">Tableau de bord statistique : Comparaison des performances (Score moyen, Taux d'inactivité, Rentabilité individuelle) entre le jeu en Solo (1 Agent) et en Duo Coopératif (2 Agents) selon différents profils heuristiques.</p>
+
+            <div class="about-text" style="margin-top: 30px;">
+                <p><strong>Conclusions de l'analyse :</strong> Les graphiques démontrent que la complexité des heuristiques (stratégies "simples" vs "complexes") a un impact direct sur le score total. De plus, bien que le mode Duo introduise un taux d'inactivité inévitable dû à l'évitement mutuel dans des espaces confinés (baisse de rentabilité individuelle), le score global de l'équipe double largement la performance d'un agent solo, validant l'efficacité des algorithmes de résolution de blocage.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Développeur Informatique Graphique. Fait avec passion.</p>
+    </footer>
+
+</body>
+</html>
