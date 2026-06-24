@@ -30,7 +30,7 @@
             </div>
             
             <div class="about-text" style="text-align: left; margin-top: 40px;">
-                <p>Ce projet de recherche vise à simuler l'évolution géologique d'un terrain en temps réel[cite: 1047]. L'objectif était de modéliser mathématiquement l'action de l'eau et de la gravité sur la croûte terrestre (paradigme Eulérien), tout en maintenant une fréquence d'exécution interactive dépassant les 900 images par seconde grâce à l'architecture massivement parallèle des processeurs graphiques[cite: 1104, 1107].</p>
+                <p>Ce projet de recherche vise à simuler l'évolution géologique d'un terrain en temps réel. L'objectif était de modéliser mathématiquement l'action de l'eau et de la gravité sur la croûte terrestre (paradigme Eulérien), tout en maintenant une fréquence d'exécution interactive dépassant les 900 images par seconde grâce à l'architecture massivement parallèle des processeurs graphiques.</p>
             </div>
 
             <div class="video-wrapper" style="width: 100%; max-width: 800px; margin: 20px auto; border-radius: 8px; overflow: hidden; border: 2px solid var(--border-color);">
@@ -53,21 +53,21 @@
             
             <h2 class="section-title">1. Modélisation Mathématique et Fluides</h2>
             <div class="about-text">
-                <p>Résoudre les équations de Navier-Stokes en 3D est computationnellement trop lourd pour du temps réel[cite: 1181, 1185]. Nous avons donc opté pour une réduction en 2.5D en utilisant les <strong>Shallow Water Equations (SWE)</strong>, qui modélisent la conservation de la masse et de la quantité de mouvement[cite: 1191, 1195].</p>
+                <p>Résoudre les équations de Navier-Stokes en 3D est computationnellement trop lourd pour du temps réel. Nous avons donc opté pour une réduction en 2.5D en utilisant les <strong>Shallow Water Equations (SWE)</strong>, qui modélisent la conservation de la masse et de la quantité de mouvement.</p>
                 <ul>
-                    <li><strong>Modèle des Tuyaux Virtuels :</strong> L'écoulement de l'eau entre les cellules de la grille est calculé via des tuyaux virtuels, propulsé par la différence de pression hydrostatique[cite: 1213, 1215].</li>
-                    <li><strong>Advection semi-Lagrangienne :</strong> Pour transporter les sédiments arrachés au sol sans créer d'accumulations aberrantes, l'algorithme procède par "backtracing" en remontant le vecteur vitesse du fluide[cite: 1496, 1497].</li>
+                    <li><strong>Modèle des Tuyaux Virtuels :</strong> L'écoulement de l'eau entre les cellules de la grille est calculé via des tuyaux virtuels, propulsé par la différence de pression hydrostatique.</li>
+                    <li><strong>Advection semi-Lagrangienne :</strong> Pour transporter les sédiments arrachés au sol sans créer d'accumulations aberrantes, l'algorithme procède par "backtracing" en remontant le vecteur vitesse du fluide.</li>
                 </ul>
             </div>
 
             <div class="image-grid">
                 <div>
                     <img src="images/erosion/virtual-pipes.png" alt="Modèle des tuyaux virtuels">
-                    <p class="figure-caption">Représentation conceptuelle du modèle des tuyaux virtuels gérant les échanges bidimensionnels[cite: 1072].</p>
+                    <p class="figure-caption">Représentation conceptuelle du modèle des tuyaux virtuels gérant les échanges bidimensionnels.</p>
                 </div>
                 <div>
                     <img src="images/erosion/before-after.png" alt="Comparaison avant après érosion">
-                    <p class="figure-caption">Comparaison entre un relief brut (bruit procédural) et sa restructuration organique par la simulation[cite: 1064].</p>
+                    <p class="figure-caption">Comparaison entre un relief brut (bruit procédural) et sa restructuration organique par la simulation.</p>
                 </div>
             </div>
 
@@ -75,36 +75,36 @@
 
             <h2 class="section-title">2. Architecture GPU et Compute Shaders</h2>
             <div class="about-text">
-                <p>Pour traiter l'évolution de plus d'un million de cellules simultanément (grille de 1024x1024), l'algorithme a été intégralement déporté sur le GPU via les <strong>Compute Shaders</strong> d'OpenGL[cite: 1271, 1278]. Les variables physiques (hauteur d'eau, substrat, sédiments) sont stockées dans des textures en virgule flottante 32-bits (GL_R32F) pour éviter les erreurs d'arrondi[cite: 1285, 1286].</p>
+                <p>Pour traiter l'évolution de plus d'un million de cellules simultanément (grille de 1024x1024), l'algorithme a été intégralement déporté sur le GPU via les <strong>Compute Shaders</strong> d'OpenGL. Les variables physiques (hauteur d'eau, substrat, sédiments) sont stockées dans des textures en virgule flottante 32-bits (GL_R32F) pour éviter les erreurs d'arrondi.</p>
                 <ul>
-                    <li><strong>Gestion de la concurrence (Race Conditions) :</strong> La parallélisation massive pose le risque de corruption de la mémoire. Nous utilisons un mécanisme de <em>Double Tamponnage (Ping-Pong Buffering)</em> séparant la lecture de l'état (i-1) de l'écriture du nouvel état (i)[cite: 1321, 1323].</li>
-                    <li><strong>Synchronisation matérielle :</strong> Des barrières de mémoire formelles (<code>glMemoryBarrier</code>) sont injectées entre chaque passe fonctionnelle du shader pour forcer le processeur graphique à purger ses caches avant de continuer[cite: 1328, 1329].</li>
+                    <li><strong>Gestion de la concurrence (Race Conditions) :</strong> La parallélisation massive pose le risque de corruption de la mémoire. Nous utilisons un mécanisme de <em>Double Tamponnage (Ping-Pong Buffering)</em> séparant la lecture de l'état (i-1) de l'écriture du nouvel état (i).</li>
+                    <li><strong>Synchronisation matérielle :</strong> Des barrières de mémoire formelles (<code>glMemoryBarrier</code>) sont injectées entre chaque passe fonctionnelle du shader pour forcer le processeur graphique à purger ses caches avant de continuer.</li>
                 </ul>
             </div>
 
             <img src="images/erosion/ping-pong-buffering.png" alt="Architecture du double tamponnage" class="article-image">
-            <p class="figure-caption">Architecture de synchronisation en mémoire vidéo. L'état validé demeure en lecture seule sous la synchronisation stricte des barrières mémoire[cite: 1344].</p>
+            <p class="figure-caption">Architecture de synchronisation en mémoire vidéo. L'état validé demeure en lecture seule sous la synchronisation stricte des barrières mémoire.</p>
 
             <hr style="border: 1px solid var(--border-color); margin: 50px 0;">
 
             <h2 class="section-title">3. Instabilité Gravitationnelle (Érosion Thermique)</h2>
             <div class="about-text">
-                <p>Le modèle hydraulique isolé générant des falaises verticales instables, nous y avons couplé un solveur d'érosion thermique[cite: 1356, 1357].</p>
+                <p>Le modèle hydraulique isolé générant des falaises verticales instables, nous y avons couplé un solveur d'érosion thermique.</p>
                 <ul>
-                    <li><strong>Voisinage de Moore :</strong> L'effondrement gravitationnel est évalué sur 8 directions (et non 4) pour éviter l'apparition d'artefacts géométriques en pyramide[cite: 1359, 1360].</li>
-                    <li><strong>Angle de Talus :</strong> Si le gradient de pente excède l'angle de repos spécifique au coefficient de dureté locale de la roche, le volume de terre glisse pour former des cônes d'éboulis naturels[cite: 1364, 1365].</li>
-                    <li><strong>Approche par Rassemblement (Gather) :</strong> Pour éviter les opérations atomiques trop coûteuses sur GPU, une cellule lit les flux préparés par ses 8 voisines pour calculer son propre bilan, garantissant le déterminisme[cite: 1378, 1379].</li>
+                    <li><strong>Voisinage de Moore :</strong> L'effondrement gravitationnel est évalué sur 8 directions (et non 4) pour éviter l'apparition d'artefacts géométriques en pyramide.</li>
+                    <li><strong>Angle de Talus :</strong> Si le gradient de pente excède l'angle de repos spécifique au coefficient de dureté locale de la roche, le volume de terre glisse pour former des cônes d'éboulis naturels.</li>
+                    <li><strong>Approche par Rassemblement (Gather) :</strong> Pour éviter les opérations atomiques trop coûteuses sur GPU, une cellule lit les flux préparés par ses 8 voisines pour calculer son propre bilan, garantissant le déterminisme.</li>
                 </ul>
             </div>
 
             <div class="image-grid">
                 <div>
                     <img src="images/erosion/thermal-erosion-compare.png" alt="Impact érosion thermique">
-                    <p class="figure-caption">Formation de cônes d'éboulis naturels après l'effondrement gravitationnel[cite: 1089].</p>
+                    <p class="figure-caption">Formation de cônes d'éboulis naturels après l'effondrement gravitationnel.</p>
                 </div>
                 <div>
                     <img src="images/erosion/titicaca-currents.png" alt="Lignes de courant lac Titicaca">
-                    <p class="figure-caption">Lignes de courant formées au fond de l'eau grâce à la modélisation des impacts hydrodynamiques[cite: 1079].</p>
+                    <p class="figure-caption">Lignes de courant formées au fond de l'eau grâce à la modélisation des impacts hydrodynamiques.</p>
                 </div>
             </div>
 
@@ -112,12 +112,12 @@
 
             <h2 class="section-title">4. Rendu Visuel et Performances</h2>
             <div class="about-text">
-                <p>La visualisation topographique est découplée de la simulation physique. Le rendu utilise le <strong>Vertex Displacement</strong> : le Vertex Shader accède à la texture de hauteur (VRAM) et déforme un maillage plan à la volée[cite: 1260, 1264].</p>
-                <p>Les normales de surface sont calculées dynamiquement dans le Fragment Shader via la fonction d'échantillonnage <code>texelFetch</code>, évitant le coût d'écriture d'une texture de normales dédiée[cite: 1265, 1266].</p>
+                <p>La visualisation topographique est découplée de la simulation physique. Le rendu utilise le <strong>Vertex Displacement</strong> : le Vertex Shader accède à la texture de hauteur (VRAM) et déforme un maillage plan à la volée.</p>
+                <p>Les normales de surface sont calculées dynamiquement dans le Fragment Shader via la fonction d'échantillonnage <code>texelFetch</code>, évitant le coût d'écriture d'une texture de normales dédiée.</p>
                 
                 <div style="background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); padding: 20px; border-radius: 8px; margin-top: 20px;">
                     <h3 style="color: var(--accent-color); margin-bottom: 10px;">Bilan d'Optimisation (Grille 1024x1024)</h3>
-                    <p style="margin-bottom: 0;">L'implémentation initiale sur CPU nécessitait environ <strong>1722 ms</strong> par cycle (soit ~0.58 FPS). Le portage complet de notre architecture sur les Compute Shaders a permis de ramener ce temps de cycle à <strong>1.0 ms</strong>, autorisant une exécution fluide à plus de <strong>960 FPS</strong> en temps réel[cite: 1395, 1396, 1397].</p>
+                    <p style="margin-bottom: 0;">L'implémentation initiale sur CPU nécessitait environ <strong>1722 ms</strong> par cycle (soit ~0.58 FPS). Le portage complet de notre architecture sur les Compute Shaders a permis de ramener ce temps de cycle à <strong>1.0 ms</strong>, autorisant une exécution fluide à plus de <strong>960 FPS</strong> en temps réel.</p>
                 </div>
             </div>
 
